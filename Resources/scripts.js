@@ -3,12 +3,24 @@ var canvas, ctx;
 var spinPin;
 
 var segments = 6;
-var segAng = Math.PI / (segments * 0.5), halfSeg = segAng * 0.5;
+var segAng = Math.PI / (segments * 0.5), halfSeg = segAng * 0.5, pi2 = Math.PI * 2;
 var targetAng = halfSeg, ang = targetAng;
 
 var pinSize = 0;
 
 var spinTime = 0, spinTimer = 0, spinSpeed = 0, spinStartSpeed = 5, spinRunning = false;
+
+var foodItems = ["Burgers", "Chicken", "Chinese", "Curry", "Desert", "Fish & Chips", "Grill", "Indian", "Italian", "Jamaican",
+    "Kebab", "Korean", "Mexican", "Oriental", "Peri Peri", "Pizza", "Thai", "Turkish"];
+var selectedItems = [], unselectedItems = [], rollingId = 5;
+for (var i = 0; i < foodItems.length; i++) {
+    unselectedItems.push(i);
+}
+for (var i = 0; i < segments; i++) {
+    var randInd = Math.floor(Math.random() * unselectedItems.length);
+    selectedItems.push(unselectedItems[randInd]);
+    unselectedItems.splice(randInd, 1);
+}
 
 var lastUpdate;
 
@@ -39,7 +51,8 @@ function Draw(now) {
         spinTimer += deltaTime;
         spinSpeed = easeOutQuad(spinTimer, spinStartSpeed, -spinStartSpeed, spinTime);
         
-        ang += deltaTime * spinSpeed;
+        ang += (deltaTime * spinSpeed);
+        
         
         if (spinTimer >= spinTime || spinSpeed <= 0) { 
             spinRunning = false;
@@ -53,11 +66,25 @@ function Draw(now) {
         }
     }
     
+    ang = ang % pi2;
+    
     ctx.clearRect(0, 0, canvas.width, canvas.height);
      
     ctx.strokeStyle = "#fff";
     for (var i = 0; i < segments; i++) {
-        var curAng = ang + segAng * i;
+        var curAng = (ang + segAng * i) % pi2;
+        
+        if (i == rollingId && curAng > segAng * 5) {
+            unselectedItems.push(selectedItems[i]);
+            var randInd = Math.floor(Math.random() * unselectedItems.length);
+            selectedItems[i] = unselectedItems[randInd];
+            unselectedItems.splice(randInd, 1);
+            rollingId = (rollingId-1)%segments;
+            if (rollingId < 0) {
+                rollingId += segments;
+            }
+        }
+        
         ctx.beginPath();
         ctx.moveTo(256, 256);
         ctx.lineTo(256 + Math.sin(curAng) * 256, 256 + Math.cos(curAng) * 256);
@@ -66,7 +93,7 @@ function Draw(now) {
         ctx.save();
         ctx.translate(256 + Math.sin(curAng + halfSeg) * 164, 256 + Math.cos(curAng + halfSeg) * 164);
         ctx.rotate(-curAng+segAng+Math.PI*0.5);
-        ctx.fillText("Food Type " + i, 0, 0);
+        ctx.fillText(foodItems[selectedItems[i]], 0, 0);
         ctx.restore();
     }
     
