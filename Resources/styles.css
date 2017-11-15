@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css?family=Oswald:200,400,700');
+h1, h2, h3, p, div, html, body, header { margin: 0; padding: 0; font-family: 'Oswald', sans-serif; }
+html, body { min-height: 100%; height: 100%; }
+.tophalf { position: relative; height: 60%; background-color: #222; box-shadow: 0px -8px 16px 16px #222; }
+.tophalf > h1 { position: absolute; color: #FF7F00; font-weight: 700; font-size: 78px; width: 100%; text-align: center; bottom: 280px; -webkit-text-stroke: 2px #fff; }
+.bothalf { height: 40%; background-color: #353535; }
+.tophalf > .content { position: absolute; left: 50%; bottom: 0; width: 600px; height: 308px; transform: translate(-50%, 0); overflow: hidden; }
+.wheelbox { width: 528px; height: 264px; margin: 36px 36px 0 36px; border-bottom: 8px solid #fff; }
+.wheel { position: relative; width: 512px; height: 512px; border-radius: 512px; border: 8px solid #fff; }
+.wheel > .pin { position: absolute; width: 0; height: 0; border-radius: 128px; border: 8px solid #fff; left: 256px; top: 256px; transform: translate(-50%, -50%); background-color: #222; cursor: pointer; overflow: hidden; }
+.pin > p { display: inline-block; color: #fff; text-align: center; top: 50%; left: 50%; position: absolute; transform: translate(-50%, -75%); font-size: 140%; user-select: none; }
+#food { overflow: hidden; }
