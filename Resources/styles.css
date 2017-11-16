@@ -9,4 +9,5 @@ html, body { min-height: 100%; height: 100%; }
 .wheel { position: relative; width: 512px; height: 512px; border-radius: 512px; border: 8px solid #fff; }
 .wheel > .pin { position: absolute; width: 0; height: 0; border-radius: 128px; border: 8px solid #fff; left: 256px; top: 256px; transform: translate(-50%, -50%); background-color: #222; cursor: pointer; overflow: hidden; }
 .pin > p { display: inline-block; color: #fff; text-align: center; top: 50%; left: 50%; position: absolute; transform: translate(-50%, -75%); font-size: 140%; user-select: none; }
-#food { overflow: hidden; }
+#food { overflow: hidden; border-top-left-radius: 256px; border-top-right-radius: 256px; }
+#foodImages { display: none; }

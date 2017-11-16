@@ -1,5 +1,6 @@
 
-var canvas, ctx;
+var canvas, ctx, foodImages;
+var imgList = [];
 var spinPin;
 
 var segments = 6;
@@ -69,8 +70,12 @@ function Draw(now) {
     ang = ang % pi2;
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-     
-    ctx.strokeStyle = "#fff";
+    
+    
+    for (var i = (segments - 1); i >= 0; i--) {
+        var curAng = (ang + segAng * i) % pi2;
+        
+    }
     for (var i = 0; i < segments; i++) {
         var curAng = (ang + segAng * i) % pi2;
         
@@ -79,22 +84,38 @@ function Draw(now) {
             var randInd = Math.floor(Math.random() * unselectedItems.length);
             selectedItems[i] = unselectedItems[randInd];
             unselectedItems.splice(randInd, 1);
+            imgList[i].src = "Resources/Images/" + foodItems[selectedItems[i]] + ".jpg";
             rollingId = (rollingId-1)%segments;
             if (rollingId < 0) {
                 rollingId += segments;
             }
         }
         
+        // Clipping plane setup
+        ctx.save();
+        
+        ctx.translate(256, 256);
+        ctx.rotate(-curAng+segAng+Math.PI*0.5);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(Math.sin(Math.PI-halfSeg) * 320, Math.cos(Math.PI-halfSeg) * 320);
+        ctx.lineTo(Math.sin(Math.PI+halfSeg) * 320, Math.cos(Math.PI+halfSeg) * 320);
+        ctx.clip();
+        
+        // Drawing for each segment
+        ctx.drawImage(imgList[i], -128, -256, 256, 256);
+        ctx.fillText(foodItems[selectedItems[i]], 0, -164);
+        ctx.strokeStyle = "#000";
+        ctx.strokeText(foodItems[selectedItems[i]], 0, -164);
+        
+        ctx.restore();
+        
+        // Segment lines
         ctx.beginPath();
         ctx.moveTo(256, 256);
         ctx.lineTo(256 + Math.sin(curAng) * 256, 256 + Math.cos(curAng) * 256);
+        ctx.strokeStyle = "#fff";
         ctx.stroke();
-        
-        ctx.save();
-        ctx.translate(256 + Math.sin(curAng + halfSeg) * 164, 256 + Math.cos(curAng + halfSeg) * 164);
-        ctx.rotate(-curAng+segAng+Math.PI*0.5);
-        ctx.fillText(foodItems[selectedItems[i]], 0, 0);
-        ctx.restore();
     }
     
     // Pointer
@@ -119,11 +140,20 @@ function SpinPinPressed(e) {
 }
 
 function Init() {
+    foodImages = document.getElementById("foodImages");
+    for (var i = 0; i < segments; i++) {
+        var foodImg = document.createElement("img");
+        foodImg.src = "Resources/Images/" + foodItems[selectedItems[i]] + ".jpg";
+        foodImages.appendChild(foodImg);
+        imgList.push(foodImg);
+    }
+    
     canvas = document.getElementById("food");
     ctx = canvas.getContext("2d");
     ctx.strokeWidth = 2;
     ctx.font = "30px Arial";
     ctx.textAlign = "center";
+    ctx.save();
     
     requestAnimationFrame(Draw);
     
